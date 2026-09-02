@@ -4,8 +4,7 @@ export const eventKeys = {
   all: () => ["events"] as const,
 
   lists: () => [...eventKeys.all(), "list"] as const,
-  list: (filters: EventListFilters) =>
-    [...eventKeys.lists(), filters] as const,
+  list: (filters: EventListFilters) => [...eventKeys.lists(), filters] as const,
   listInfinite: (filters: Omit<EventListFilters, "page">) =>
     [...eventKeys.lists(), "infinite", filters] as const,
 
