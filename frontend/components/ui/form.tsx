@@ -107,8 +107,7 @@ function FormControl({
   string,
   unknown
 >) {
-  const { error, formItemId, formDescriptionId, formMessageId } =
-    useFormField()
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
 
   return React.cloneElement(children, {
     id: formItemId,
