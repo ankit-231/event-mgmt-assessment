@@ -21,6 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # export DJANGO_PRODUCTION=True  # for production
 is_production = config_temp("DJANGO_PRODUCTION", default=True, cast=bool)
 
+env_file = ".env.prod" if is_production else ".env"
+
+if not Path.exists(BASE_DIR / env_file):
+    raise FileNotFoundError(
+        "Environment file `{}` not found in the project root directory.".format(
+            env_file
+        )
+    )
+
 if is_production:
     # Here, is_production is True. Print in green color
     print_green(
