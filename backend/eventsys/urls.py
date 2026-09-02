@@ -15,6 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
 
-urlpatterns = []
+from apps.event import urls as event_urls
+
+api_prefix = settings.API_VERSION_1_URL_PREFIX
+
+all_patterns = [
+    path("events/", include((event_urls, "events"))),
+]
+
+urlpatterns = [
+    path(api_prefix + "/", include(all_patterns)),
+]
