@@ -39,6 +39,14 @@ class ListCreateEventView(BaseAPIView, FilteredAPIMixin, PaginatedAPIMixin):
         if search:
             q["name__icontains"] = search
 
+        start_date = filters.get("start_date")
+        if start_date:
+            q["start_time__gte"] = start_date
+
+        end_date = filters.get("end_date")
+        if end_date:
+            q["start_time__lte"] = end_date
+
         events = Event.objects.filter(**q)
 
         # ordering
