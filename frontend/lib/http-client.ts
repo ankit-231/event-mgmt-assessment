@@ -41,6 +41,7 @@ class HttpClient {
   private async request<T>(
     method: Method,
     url: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: any,
     config: CustomRequestConfig = {}
   ): Promise<AxiosResponse<ApiResponse<T>>> {
@@ -54,30 +55,33 @@ class HttpClient {
     return response
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public get<T = any>(url: string, config?: CustomRequestConfig) {
     return this.request<T>("GET", url, undefined, config)
   }
 
-  public post<T = any>(
+  public post<T = any>( // eslint-disable-line @typescript-eslint/no-explicit-any
     url: string,
-    data?: any,
+    data?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     config?: CustomRequestConfig
   ) {
     return this.request<T>("POST", url, data, config)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public put<T = any>(url: string, data?: any, config?: CustomRequestConfig) {
     return this.request<T>("PUT", url, data, config)
   }
 
-  public patch<T = any>(
+  public patch<T = any>( // eslint-disable-line @typescript-eslint/no-explicit-any
     url: string,
-    data?: any,
+    data?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     config?: CustomRequestConfig
   ) {
     return this.request<T>("PATCH", url, data, config)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public delete<T = any>(url: string, config?: CustomRequestConfig) {
     return this.request<T>("DELETE", url, undefined, config)
   }
