@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 from apps.core.utils.base_views import BaseAPIView
+from apps.core.utils.filters import EventFilterSerializer
+from apps.core.utils.mixins import FilteredAPIMixin, PaginatedAPIMixin
 from apps.core.utils.response_wrappers import NoContentResponse, OKResponse
 from apps.event.models import Event
 from apps.event.serializers import (
@@ -14,16 +16,39 @@ from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
-class ListCreateEventView(BaseAPIView):
+class ListCreateEventView(BaseAPIView, FilteredAPIMixin, PaginatedAPIMixin):
     output_serializer = GetEventDetailSerializer
 
     input_serializer = CreateEventSerializer
 
-    def get(self, request):
-        events = Event.objects.all()
+    filter_serializer_class = EventFilterSerializer
 
-        data = self.output_serializer(events, many=True).data
-        return OKResponse(data=data)
+    def get(self, request):
+
+        # Get validated filter params
+        filters = self.get_filter_params()
+
+        q = {}
+
+        event_type = filters.get("event_type")
+        if event_type:
+            q["event_type"] = event_type
+
+        search = filters.get("q")
+        if search:
+            q["name__icontains"] = search
+
+        events = Event.objects.filter(**q)
+
+        # ordering
+        ordering = filters.get("ordering", "-created_at")
+        events = self.apply_ordering(events, ordering)
+
+        paginated_events, paginator = self.paginate_queryset(events)
+
+        data = self.output_serializer(paginated_events, many=True).data
+
+        return self.get_paginated_response(data=data, paginator=paginator)
 
     def post(self, request):
         data = request.data
