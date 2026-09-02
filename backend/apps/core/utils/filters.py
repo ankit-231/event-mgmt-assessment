@@ -14,4 +14,6 @@ class BaseFilterSerializer(serializers.Serializer):
 class EventFilterSerializer(BaseFilterSerializer):
     """Event-specific filters"""
 
-    event_type = serializers.ChoiceField(choices=Event, required=False)
+    event_type = serializers.ChoiceField(
+        choices=Event.EventType.choices, required=False
+    )
