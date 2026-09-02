@@ -9,11 +9,11 @@ User = get_user_model()
 
 class Event(BaseModel):
     class EventType(models.TextChoices):
-        CONFERENCE = "Conference", "Conference"
-        MEETUP = "Meetup", "Meetup"
-        WORKSHOP = "Workshop", "Workshop"
-        WEBINAR = "Webinar", "Webinar"
-        OTHER = "Other", "Other"
+        CONFERENCE = "Conference", "conference"
+        MEETUP = "Meetup", "meetup"
+        WORKSHOP = "Workshop", "workshop"
+        WEBINAR = "Webinar", "webinar"
+        OTHER = "Other", "other"
 
     event_type = models.CharField(
         max_length=255, choices=EventType.choices, default=EventType.OTHER
