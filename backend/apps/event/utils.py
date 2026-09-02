@@ -25,15 +25,15 @@ class EventService:
         return validated_data
 
     def update(self, event: Event, data: dict) -> Event:
-        validated_data = self._validate_update_data(data)
+        validated_data = self._validate_update_data(event, data)
         # set validate_fields_exist because we rely on ModelSerializer to validate fields
         update_model_instance(
             instance=event, validate_fields_exist=False, **validated_data
         )
         return event
 
-    def _validate_update_data(self, data: dict) -> dict:
-        serializer = UpdateEventSerializer(data=data, partial=True)
+    def _validate_update_data(self, event: Event, data: dict) -> dict:
+        serializer = UpdateEventSerializer(instance=event, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
         return validated_data
