@@ -20,11 +20,17 @@ import {
   EventUpdatePayload,
 } from "@/types/events"
 
-export function useEventList(filters: EventListFilters = {}) {
+export function useEventList(
+  filters: EventListFilters = {},
+  options: { refetchInterval?: number | false } = {}
+) {
   return useQuery({
     queryKey: eventKeys.list(filters),
     queryFn: () => getEventList(filters),
     retry: false,
+    refetchInterval: options.refetchInterval ?? false,
+    // keep the previous page's data on screen while a poll/filter change refetches
+    placeholderData: (previousData) => previousData,
   })
 }
 
@@ -53,11 +59,14 @@ export function useEventDetail(id: EventId | undefined) {
   })
 }
 
-export function useEventAnalytics() {
+export function useEventAnalytics(
+  options: { refetchInterval?: number | false } = {}
+) {
   return useQuery({
     queryKey: eventKeys.analytics(),
     queryFn: getEventAnalytics,
     retry: false,
+    refetchInterval: options.refetchInterval ?? false,
   })
 }
 
