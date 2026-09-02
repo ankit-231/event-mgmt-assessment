@@ -7,10 +7,11 @@ from apps.core.utils.response_wrappers import NoContentResponse, OKResponse
 from apps.event.models import Event
 from apps.event.serializers import (
     CreateEventSerializer,
+    EventAnalyticSerializer,
     GetEventDetailSerializer,
     UpdateEventSerializer,
 )
-from apps.event.utils import EventService
+from apps.event.utils import EventAnalyticService, EventService
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
@@ -84,3 +85,14 @@ class RetrieveUpdateDeleteEventView(BaseAPIView):
         event = get_object_or_404(Event, id=event_id)
         event.delete()
         return NoContentResponse()
+
+
+class EventAnalyticAPI(BaseAPIView):
+    output_serializer = EventAnalyticSerializer
+
+    def get(self, request):
+        metrics = EventAnalyticService().get_last_24_hours_metrics()
+
+        data = self.output_serializer(metrics).data
+
+        return OKResponse(data=data)
