@@ -37,6 +37,9 @@ export type EventUpdatePayload = Partial<Omit<EventPayload, "user">>
 
 export interface EventListFilters extends BaseFilters {
   event_type?: EventType
+  // filters on Event.start_time - ISO datetime strings
+  start_date?: string
+  end_date?: string
 }
 
 export interface EventAnalytics {

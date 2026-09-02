@@ -12,6 +12,8 @@ import { EventListFilters, EventType } from "@/types/events"
 export function EventDashboard() {
   const [search, setSearch] = useState("")
   const [eventType, setEventType] = useState<EventType | "all">("all")
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
 
   const debouncedSearch = useDebouncedValue(search, SEARCH_DEBOUNCE_MS)
 
@@ -19,8 +21,16 @@ export function EventDashboard() {
     () => ({
       ...(debouncedSearch && { q: debouncedSearch }),
       ...(eventType !== "all" && { event_type: eventType }),
+      // start_date/end_date are plain "YYYY-MM-DD" values from <input type="date">;
+      // widen to the full day since Event.start_time is a datetime
+      ...(startDate && {
+        start_date: new Date(`${startDate}T00:00:00`).toISOString(),
+      }),
+      ...(endDate && {
+        end_date: new Date(`${endDate}T23:59:59.999`).toISOString(),
+      }),
     }),
-    [debouncedSearch, eventType]
+    [debouncedSearch, eventType, startDate, endDate]
   )
 
   return (
@@ -31,6 +41,10 @@ export function EventDashboard() {
           onSearchChange={setSearch}
           eventType={eventType}
           onEventTypeChange={setEventType}
+          startDate={startDate}
+          onStartDateChange={setStartDate}
+          endDate={endDate}
+          onEndDateChange={setEndDate}
         />
         <EventFeed filters={filters} />
       </div>
