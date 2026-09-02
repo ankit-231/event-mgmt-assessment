@@ -15,6 +15,9 @@ class Event(BaseModel):
         WEBINAR = "Webinar", "Webinar"
         OTHER = "Other", "Other"
 
+    event_type = models.CharField(
+        max_length=255, choices=EventType.choices, default=EventType.OTHER
+    )
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
     description = models.TextField()
