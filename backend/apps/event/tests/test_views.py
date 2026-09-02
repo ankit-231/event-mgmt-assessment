@@ -99,6 +99,44 @@ class EventEndpointsSanityTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Event.objects.filter(id=self.event.id).exists())
 
+    def test_list_events_filtered_by_date_range(self):
+        url = reverse("events:list_create_event")
+        now = timezone.now()
+
+        # self.event starts at `now`; add one that falls outside the range
+        old_event = EventFactory(
+            user=self.user,
+            start_time=now - timezone.timedelta(days=10),
+            end_time=now - timezone.timedelta(days=10) + timezone.timedelta(hours=1),
+        )
+
+        response = self.client.get(
+            url,
+            data={
+                "start_date": (now - timezone.timedelta(days=1)).isoformat(),
+                "end_date": (now + timezone.timedelta(days=1)).isoformat(),
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        returned_ids = {event["id"] for event in response.data["data"]["results"]}
+        self.assertIn(self.event.id, returned_ids)
+        self.assertNotIn(old_event.id, returned_ids)
+
+    def test_list_events_with_start_date_after_end_date_returns_400(self):
+        url = reverse("events:list_create_event")
+        now = timezone.now()
+
+        response = self.client.get(
+            url,
+            data={
+                "start_date": now.isoformat(),
+                "end_date": (now - timezone.timedelta(days=1)).isoformat(),
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_analytics(self):
         url = reverse("events:event_analytics")
 
