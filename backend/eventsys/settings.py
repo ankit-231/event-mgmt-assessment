@@ -88,7 +88,10 @@ if DEBUG:
     THIRD_PARTY_APPS += ["django_extensions"]
 
 
-LOCAL_APPS = ["apps.core"]
+LOCAL_APPS = [
+    "apps.core",
+    "apps.event",
+]
 
 INSTALLED_APPS = [
     *DJANGO_DEFAULT_APPS,
