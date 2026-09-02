@@ -4,6 +4,7 @@ from apps.core.utils.base_views import BaseAPIView
 from apps.core.utils.response_wrappers import OKResponse
 from apps.event.models import Event
 from apps.event.serializers import CreateEventSerializer, GetEventDetailSerializer
+from apps.event.utils import EventService
 
 # Create your views here.
 
@@ -20,7 +21,9 @@ class ListCreateEventView(BaseAPIView):
         return OKResponse(data=data)
 
     def post(self, request):
-        serializer = self.output_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        event = serializer.save()
-        return OKResponse(data=self.output_serializer(event).data)
+        data = request.data
+        event = EventService().create(data=data)
+
+        output_data = self.output_serializer(event).data
+
+        return OKResponse(data=output_data)
