@@ -11,72 +11,131 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config as config_temp
+from .utils import get_config, print_green, print_yellow
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# environment variable `DJANGO_PRODUCTION` is set to True for loading `.env.prod` and "0" for loading `.env`
+# export DJANGO_PRODUCTION=True  # for production
+is_production = config_temp("DJANGO_PRODUCTION", default=True, cast=bool)
+
+if is_production:
+    # Here, is_production is True. Print in green color
+    print_green(
+        "---------DJANGO_PRODUCTION: {} is used. Using `.env.prod`---------".format(
+            is_production
+        )
+    )
+else:
+    # Here, is_production is False. Print in yellow color
+    print_yellow(
+        "---------DJANGO_PRODUCTION: {} is used. Using `.env`---------".format(
+            is_production
+        )
+    )
+
+# get config
+config = get_config(is_production=is_production)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x7-y1q*!=bo$x(14+k0zf#6j@x4g*-^_oyy9sufl0)o43fzokk'
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DJANGO_DEBUG", cast=bool)
 
-ALLOWED_HOSTS = []
+if not DEBUG:
+    # Here, DEBUG is False
+    print_green("---------DEBUG: {} is used.---------".format(DEBUG))
+else:
+    # Here, DEBUG is True
+    print_yellow("---------DEBUG: {} is used. Using .env---------".format(DEBUG))
+
+ALLOWED_HOSTS = [config("DJANGO_ALLOWED_HOST_1"), config("DJANGO_ALLOWED_HOST_2")]
 
 
 # Application definition
 
+DJANGO_DEFAULT_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+]
+
+THIRD_PARTY_APPS = [
+    "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+]
+
+if DEBUG:
+    THIRD_PARTY_APPS += ["django_extensions"]
+
+
+LOCAL_APPS = ["apps.core"]
+
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    *DJANGO_DEFAULT_APPS,
+    *THIRD_PARTY_APPS,
+    *LOCAL_APPS,
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'eventsys.urls'
+ROOT_URLCONF = "eventsys.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'eventsys.wsgi.application'
+WSGI_APPLICATION = "eventsys.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": {
+        "ENGINE": config("DJANGO_DB_ENGINE"),
+        "NAME": config("DJANGO_DB_NAME"),
+        "USER": config("DJANGO_DB_USER"),
+        "PASSWORD": config("DJANGO_DB_PASSWORD"),
+        "HOST": config("DJANGO_DB_HOST"),
+        "PORT": config("DJANGO_DB_PORT"),
+    },
+    "sqlite": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    },
 }
 
 
@@ -85,16 +144,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -102,9 +161,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -114,9 +173,51 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
+
+# Where your source static files live during development
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "user.User"
+
+
+# rest framework settings
+REST_FRAMEWORK_DEFAULT_RENDERER_CLASSES = ("rest_framework.renderers.JSONRenderer",)
+if DEBUG:
+    REST_FRAMEWORK_DEFAULT_RENDERER_CLASSES += (
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    )
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": (),
+    "EXCEPTION_HANDLER": "apps.core.utils.exception_handler.custom_exception_handler",
+    "DEFAULT_RENDERER_CLASSES": REST_FRAMEWORK_DEFAULT_RENDERER_CLASSES,
+}
+
+# without trailing slash
+API_VERSION_1_URL_PREFIX = "api/v1"
+
+
+# Don't use CORS_ALLOW_ALL_ORIGINS = True with CORS_ALLOW_CREDENTIALS = True. It will silently fail due to CORS policy.
+
+CORS_EXPOSE_HEADERS = [
+    "Content-Type",
+    "Authorization",
+    "X-RateLimit-Limit",
+]
+# required for cookies to be sent cross-origin
+CORS_ALLOW_CREDENTIALS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    config("DJANGO_FRONTEND_URL"),
+]
