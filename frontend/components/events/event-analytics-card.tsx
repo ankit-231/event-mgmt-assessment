@@ -39,6 +39,8 @@ export function EventAnalyticsCard() {
           Top event types (last 24h)
         </CardTitle>
         <CardDescription>
+          Event needs to start in less than 24 hours to be shown here <br />
+          <br />
           {isPending
             ? "Loading analytics..."
             : `${data?.total ?? 0} events total`}
