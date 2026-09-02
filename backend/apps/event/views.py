@@ -49,7 +49,7 @@ class ListCreateEventView(BaseAPIView, FilteredAPIMixin, PaginatedAPIMixin):
 
         data = self.output_serializer(paginated_events, many=True).data
 
-        return self.get_paginated_response(data=data, paginator=paginator)
+        return self.get_paginated_response(serializer_data=data, paginator=paginator)
 
     def post(self, request):
         data = request.data
