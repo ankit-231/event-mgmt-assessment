@@ -37,10 +37,7 @@ export const createEvent = async (payload: EventPayload) => {
   return res.data.data
 }
 
-export const updateEvent = async (
-  id: EventId,
-  payload: EventUpdatePayload
-) => {
+export const updateEvent = async (id: EventId, payload: EventUpdatePayload) => {
   const res = await httpClient.patch<EventData>(
     apiEndpoints.events.update(id),
     payload
