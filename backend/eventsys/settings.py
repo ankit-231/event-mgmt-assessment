@@ -211,6 +211,13 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (),
     "EXCEPTION_HANDLER": "apps.core.utils.exception_handler.custom_exception_handler",
     "DEFAULT_RENDERER_CLASSES": REST_FRAMEWORK_DEFAULT_RENDERER_CLASSES,
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        # since all endpoints are unauthenticated, we can use AnonRateThrottle for all endpoints.
+        "anon": "30/minute",
+    },
 }
 
 # without trailing slash
