@@ -3,7 +3,7 @@ export interface ApiResponse<T> {
   message: string
 }
 
-export interface ApiErrorResponse<T = any> {
+export interface ApiErrorResponse<T = unknown> {
   message: string
   extra: T
 }
@@ -16,7 +16,7 @@ export interface PaginatedData<T> {
   total_pages: number
   current_page: number
   page_size: number
-  filters: Record<string, any>
+  filters: Record<string, unknown>
   results: T
 }
 

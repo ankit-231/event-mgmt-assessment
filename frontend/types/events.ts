@@ -20,7 +20,7 @@ export interface EventData {
   description: string
   start_time: string
   end_time: string
-  payload: Record<string, any>
+  payload: Record<string, unknown>
 }
 
 export interface EventPayload {
@@ -30,7 +30,7 @@ export interface EventPayload {
   description: string
   start_time: string
   end_time: string
-  payload: Record<string, any>
+  payload: Record<string, unknown>
 }
 
 export type EventUpdatePayload = Partial<Omit<EventPayload, "user">>
