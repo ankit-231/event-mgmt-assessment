@@ -1,0 +1,2 @@
+export const EVENT_FEED_POLL_INTERVAL_MS = 5000
+export const SEARCH_DEBOUNCE_MS = 400
