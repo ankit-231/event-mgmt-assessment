@@ -19,11 +19,13 @@ from django.urls import path, include
 from django.conf import settings
 
 from apps.event import urls as event_urls
+from apps.core import urls as core_urls
 
 api_prefix = settings.API_VERSION_1_URL_PREFIX
 
 all_patterns = [
     path("events/", include((event_urls, "events"))),
+    path("core/", include((core_urls, "core"))),
 ]
 
 urlpatterns = [
