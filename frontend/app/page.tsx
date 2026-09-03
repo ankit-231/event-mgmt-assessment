@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { EventDashboard } from "@/components/events/event-dashboard"
+import { SeedEventsButton } from "@/components/events/seed-events-button"
 
 export default function Page() {
   return (
@@ -13,11 +14,14 @@ export default function Page() {
             Live feed of incoming events, updated every 5 seconds.
           </p>
         </div>
-        <Button
-          variant="outline"
-          nativeButton={false}
-          render={<Link href="/events">Manage events</Link>}
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          <SeedEventsButton />
+          <Button
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/events">Manage events</Link>}
+          />
+        </div>
       </header>
 
       <EventDashboard />

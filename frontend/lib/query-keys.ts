@@ -13,3 +13,8 @@ export const eventKeys = {
 
   analytics: () => [...eventKeys.all(), "analytics"] as const,
 }
+
+export const configurationKeys = {
+  all: () => ["configuration"] as const,
+  detail: () => [...configurationKeys.all(), "detail"] as const,
+}

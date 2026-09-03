@@ -9,6 +9,10 @@ export const apiEndpoints = {
     delete: (eventId: EventId) => `/events/${eventId}/`,
     analytics: "/events/analytics/",
   },
+  configuration: {
+    detail: "/core/configuration/",
+  },
+  seedEvents: "/core/seed-events/",
 } as const
 
 export type ApiEndpoints = typeof apiEndpoints
