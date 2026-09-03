@@ -61,7 +61,7 @@ if not DEBUG:
     print_green("---------DEBUG: {} is used.---------".format(DEBUG))
 else:
     # Here, DEBUG is True
-    print_yellow("---------DEBUG: {} is used. Using .env---------".format(DEBUG))
+    print_yellow("---------DEBUG: {} is used.---------".format(DEBUG))
 
 ALLOWED_HOSTS = [config("DJANGO_ALLOWED_HOST_1"), config("DJANGO_ALLOWED_HOST_2")]
 
@@ -198,10 +198,10 @@ AUTH_USER_MODEL = "core.User"
 
 # rest framework settings
 REST_FRAMEWORK_DEFAULT_RENDERER_CLASSES = ("rest_framework.renderers.JSONRenderer",)
-if DEBUG:
-    REST_FRAMEWORK_DEFAULT_RENDERER_CLASSES += (
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    )
+# if DEBUG:
+REST_FRAMEWORK_DEFAULT_RENDERER_CLASSES += (
+    "rest_framework.renderers.BrowsableAPIRenderer",
+)
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
