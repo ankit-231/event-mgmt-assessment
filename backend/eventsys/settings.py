@@ -11,42 +11,40 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config as config_temp
-from .utils import get_config, print_green, print_yellow
+from decouple import config
+
+# from .utils import get_config, print_green, print_yellow
+from .utils import print_green, print_yellow
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # environment variable `DJANGO_PRODUCTION` is set to True for loading `.env.prod` and "0" for loading `.env`
 # export DJANGO_PRODUCTION=True  # for production
-is_production = config_temp("DJANGO_PRODUCTION", default=True, cast=bool)
+is_production = config("DJANGO_PRODUCTION", default=True, cast=bool)
 
-env_file = ".env.prod" if is_production else ".env"
+# env_file = ".env.prod" if is_production else ".env"
 
-if not Path.exists(BASE_DIR / env_file):
-    raise FileNotFoundError(
-        "Environment file `{}` not found in the project root directory.".format(
-            env_file
-        )
-    )
+# if not Path.exists(BASE_DIR / env_file):
+#     raise FileNotFoundError(
+#         "Environment file `{}` not found in the project root directory.".format(
+#             env_file
+#         )
+#     )
 
 if is_production:
     # Here, is_production is True. Print in green color
     print_green(
-        "---------DJANGO_PRODUCTION: {} is used. Using `.env.prod`---------".format(
-            is_production
-        )
+        "---------DJANGO_PRODUCTION: {} is used.---------".format(is_production)
     )
 else:
     # Here, is_production is False. Print in yellow color
     print_yellow(
-        "---------DJANGO_PRODUCTION: {} is used. Using `.env`---------".format(
-            is_production
-        )
+        "---------DJANGO_PRODUCTION: {} is used.---------".format(is_production)
     )
 
 # get config
-config = get_config(is_production=is_production)
+# config = get_config(is_production=is_production)
 
 
 # Quick-start development settings - unsuitable for production
