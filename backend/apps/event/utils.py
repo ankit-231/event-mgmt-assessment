@@ -1,10 +1,15 @@
+import random
+
 from django.db.models import Count
 from django.utils import timezone
 
 from apps.core.utils.common import update_model_instance
+from apps.event.factories import EventFactory, UserFactory
 from apps.event.serializers import CreateEventSerializer, UpdateEventSerializer
 
 from .models import Event
+
+EVENT_TYPES = [choice[0] for choice in Event.EventType.choices]
 
 
 class EventService:
@@ -55,3 +60,27 @@ class EventAnalyticService:
             "total": events.count(),
             "counts_by_type": counts_by_type,
         }
+
+
+class EventSeedService:
+
+    def seed(self, count: int = 20) -> list[Event]:
+        users = UserFactory.create_batch(min(count, 5))
+
+        created = []
+        for _ in range(count):
+            now = timezone.now()
+            # spread start_time across the last 48 hours so some events
+            # land inside the /analytics/ last-24-hours window and some don't
+            start_time = now - timezone.timedelta(hours=random.uniform(0, 48))
+            end_time = start_time + timezone.timedelta(hours=random.uniform(1, 4))
+
+            event = EventFactory(
+                user=random.choice(users),
+                event_type=random.choice(EVENT_TYPES),
+                start_time=start_time,
+                end_time=end_time,
+            )
+            created.append(event)
+
+        return created
