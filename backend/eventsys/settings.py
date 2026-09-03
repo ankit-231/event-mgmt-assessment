@@ -188,6 +188,12 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+
+STATIC_ROOT = BASE_DIR / "collected_static"
+
+if not Path.exists(STATIC_ROOT):
+    Path.mkdir(STATIC_ROOT, exist_ok=True)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
